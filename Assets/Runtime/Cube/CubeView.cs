@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Runtime.Cube
 {
@@ -9,9 +8,11 @@ namespace Runtime.Cube
         [SerializeField] private Color _pathColor;
         [SerializeField] private Color _cubeColor;
         [SerializeField] private MeshRenderer _meshRenderer;
+        [SerializeField] private LineRenderer _lineRenderer;
 
         public Color BackgroundColor => _backgroundColor;
         public Color PathColor => _pathColor;
+        public LineRenderer LineRenderer => _lineRenderer;
 
         public Vector3 Position()
         {

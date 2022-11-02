@@ -11,7 +11,6 @@ namespace Runtime.UI
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _stopButton;
 
-
         public Button RemoveSegmentButton => _removeSegmentButton;
         public Button RemovePathButton => _removePathButton;
         public Button ChangeBlockButton => _changeBlockButton;

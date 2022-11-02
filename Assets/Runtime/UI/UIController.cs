@@ -10,5 +10,10 @@
             _view = view;
             _uiModel = uiModel;
         }
+
+        public void Initialize()
+        {
+            _view.ChangeBlockButton.onClick.AddListener(_uiModel.ChangeCubeButtonClick);
+        }
     }
 }

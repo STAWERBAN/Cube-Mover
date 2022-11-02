@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Runtime.Cube;
 using Runtime.UI;
+
 using UnityEngine;
 
 namespace Runtime
@@ -12,14 +14,14 @@ namespace Runtime
 
         private readonly Camera _camera;
         private readonly UIModel _uiModel;
-        private readonly BackgroundView _backgroundView;
 
         private MouseController _mouseController;
+        private CubeView _currentCube;
+        private Queue<CubeView> _cubeQueue = new Queue<CubeView>();
 
-        public Game(Camera camera, BackgroundView backgroundView, UIModel uiModel)
+        public Game(Camera camera, UIModel uiModel)
         {
             _camera = camera;
-            _backgroundView = backgroundView;
             _uiModel = uiModel;
         }
 
@@ -30,6 +32,8 @@ namespace Runtime
             _mouseController.MouseDragging += OnMouseDragging;
             _mouseController.MousePressed += OnMousePressed;
             _mouseController.MouseUpped += OnMouseUpped;
+
+            _uiModel.ChangeCube += OnChangeCube;
         }
 
         public void AddNewCube(CubeView cube, Path path)
@@ -40,12 +44,41 @@ namespace Runtime
                 return;
             }
 
+            _cubeQueue.Enqueue(cube);
+
+            if (_currentCube is null)
+            {
+                _currentCube = cube;
+
+                _cubeQueue.Dequeue();
+
+                _uiModel.ChangeColor(_currentCube);
+            }
+
             _cubePathDictionary.Add(cube, path);
         }
 
         public void Dispose()
         {
             UnsubscribeEvents();
+        }
+
+        private void CreateCubeQueue()
+        {
+            foreach (var cube in _cubePathDictionary.Keys)
+            {
+                _cubeQueue.Enqueue(cube);
+            }
+        }
+
+        private void OnChangeCube()
+        {
+            if (_cubeQueue.Count == 0)
+                CreateCubeQueue();
+
+            _currentCube = _cubeQueue.Dequeue();
+
+            _uiModel.ChangeColor(_currentCube);
         }
 
         private void UnsubscribeEvents()
