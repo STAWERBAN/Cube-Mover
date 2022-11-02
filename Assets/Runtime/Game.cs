@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Runtime.Cube;
 using Runtime.UI;
+
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Runtime
 {
@@ -11,38 +12,32 @@ namespace Runtime
     {
         private Dictionary<CubeView, CubeModel> _cubeDictionary = new Dictionary<CubeView, CubeModel>();
 
-        private readonly Camera _camera;
         private readonly UIModel _uiModel;
-        private readonly EventSystem _eventSystem;
+        private readonly FinishView _finishView;
+        private readonly MouseController _mouseController;
 
-        private MouseController _mouseController;
         private CubeView _currentCube;
         private CubeModel _currentModel;
         private Queue<CubeView> _cubeQueue = new Queue<CubeView>();
 
-        public Game(Camera camera, UIModel uiModel, EventSystem eventSystem)
+        public Game(UIModel uiModel, FinishView finishView, MouseController mouseController)
         {
-            _camera = camera;
             _uiModel = uiModel;
-            _eventSystem = eventSystem;
+            _finishView = finishView;
+            _mouseController = mouseController;
         }
 
         public void Initilize()
         {
-            _mouseController = new MouseController(_camera, _eventSystem);
-
             _mouseController.MouseDragging += OnMouseDragging;
             _mouseController.MousePressed += OnMousePressed;
             _mouseController.MouseUpped += OnMouseUpped;
 
             _uiModel.ChangeCube += OnChangeCube;
+            _uiModel.StopButtonClick += OnStopButtonClick;
+            _uiModel.StartButtonClick += OnStartButtonClick;
             _uiModel.DeletePathButtonClicked += OnDeletePathButtonClicked;
             _uiModel.DeletePathSegmentButtonClicked += OnDeletePathSegmentButtonClicked;
-        }
-
-        public void Update()
-        {
-            _mouseController?.Update();
         }
 
         public void AddNewCube(CubeView cube, CubeModel model)
@@ -102,13 +97,6 @@ namespace Runtime
             _uiModel.ChangeColor(_currentCube);
         }
 
-        private void UnsubscribeEvents()
-        {
-            _mouseController.MouseDragging -= OnMouseDragging;
-            _mouseController.MousePressed -= OnMousePressed;
-            _mouseController.MouseUpped -= OnMouseUpped;
-        }
-
         private void OnMouseUpped()
         {
             _currentModel.OnSegmentChangeComplete();
@@ -122,6 +110,51 @@ namespace Runtime
         private void OnMouseDragging(Vector3 offset)
         {
             _currentModel.OnMoveLastSegment(offset);
+        }
+
+        private void OnStartButtonClick()
+        {
+            _uiModel.SetBackgroundDefaultColor();
+
+            foreach (var cubeModel in _cubeDictionary.Values)
+            {
+                cubeModel.OnCubeStartMoving();
+                cubeModel.CubeMovingPosition += OnCubeMoving;
+            }
+        }
+
+        private void OnStopButtonClick()
+        {
+            _finishView.SetDefaultColor();
+            _uiModel.ChangeColor(_currentCube);
+
+            foreach (var cubeModel in _cubeDictionary.Values)
+            {
+                cubeModel.OnCubeStopMoving();
+                cubeModel.CubeMovingPosition -= OnCubeMoving;
+            }
+        }
+
+        private void OnCubeMoving(Vector3 position, CubeView cubeView)
+        {
+            if ((position.x < _finishView.FinishPosition().x))
+                return;
+
+            _cubeDictionary[cubeView].CubeMovingPosition -= OnCubeMoving;
+            _finishView.SetColor(cubeView.CubeColor);
+        }
+
+        private void UnsubscribeEvents()
+        {
+            _mouseController.MouseDragging -= OnMouseDragging;
+            _mouseController.MousePressed -= OnMousePressed;
+            _mouseController.MouseUpped -= OnMouseUpped;
+            
+            _uiModel.ChangeCube -= OnChangeCube;
+            _uiModel.StopButtonClick -= OnStopButtonClick;
+            _uiModel.StartButtonClick -= OnStartButtonClick;
+            _uiModel.DeletePathButtonClicked -= OnDeletePathButtonClicked;
+            _uiModel.DeletePathSegmentButtonClicked -= OnDeletePathSegmentButtonClicked;
         }
     }
 }

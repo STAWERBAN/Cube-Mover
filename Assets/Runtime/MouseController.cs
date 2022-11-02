@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 namespace Runtime
 {
-    public class MouseController
+    public class MouseController : IUpdatable
     {
         public event Action MousePressed = delegate { };
         public event Action MouseUpped = delegate { }; 

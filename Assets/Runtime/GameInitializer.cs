@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-
 using UnityEngine;
-
 using Runtime;
+using Runtime.Background;
 using Runtime.UI;
 using Runtime.Cube;
 using UnityEngine.EventSystems;
@@ -11,15 +10,20 @@ public class GameInitializer : MonoBehaviour
 {
     [SerializeField] private List<CubeView> _cubes;
     [SerializeField] private BackgroundView _backgroundView;
+    [SerializeField] private FinishView _finishView;
     [SerializeField] private UIView _view;
     [SerializeField] private Camera _camera;
     [SerializeField] private EventSystem _eventSystem;
 
-    private UIModel _uiModel;
+    private List<IUpdatable> _updatables = new List<IUpdatable>();
+
     private Game _game;
+    private UIModel _uiModel;
+    private MouseController _mouseController;
 
     private void Start()
     {
+        InitializeMouseController();
         InitializeUI();
         InitializeBackground();
         InitializeGame();
@@ -28,7 +32,16 @@ public class GameInitializer : MonoBehaviour
 
     private void Update()
     {
-        _game?.Update();
+        foreach (var updatable in _updatables)
+        {
+            updatable.Update();
+        }
+    }
+
+    private void InitializeMouseController()
+    {
+        _mouseController = new MouseController(_camera, _eventSystem);
+        _updatables.Add(_mouseController);
     }
 
     private void InitializeUI()
@@ -47,7 +60,7 @@ public class GameInitializer : MonoBehaviour
 
     private void InitializeGame()
     {
-        _game = new Game(_camera, _uiModel, _eventSystem);
+        _game = new Game(_uiModel, _finishView, _mouseController);
         _game.Initilize();
     }
 
@@ -58,6 +71,8 @@ public class GameInitializer : MonoBehaviour
             var cubeModel = new CubeModel();
             var cubePath = new Path(cube.LineRenderer, cube.PathColor, cube.Position());
             var cubeController = new CubeController(cube, cubePath, cubeModel);
+
+            _updatables.Add(cubeController);
 
             _game.AddNewCube(cube, cubeModel);
 

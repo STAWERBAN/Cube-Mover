@@ -1,9 +1,10 @@
-﻿using Runtime.Cube;
+﻿using System;
+using Runtime.Cube;
 using Runtime.UI;
 
-namespace Runtime
+namespace Runtime.Background
 {
-    public class BackgroundController
+    public class BackgroundController : IDisposable
     {
         private readonly UIModel _uiModel;
         private readonly BackgroundView _backgroundView;
@@ -17,6 +18,13 @@ namespace Runtime
         public void Initialize()
         {
             _uiModel.ChangeCubeColor += OnChangeColor;
+            _uiModel.SetDefaultBackgroundColor += _backgroundView.SetDefaultColor;
+        }
+
+        public void Dispose()
+        {
+            _uiModel.ChangeCubeColor -= OnChangeColor;
+            _uiModel.SetDefaultBackgroundColor -= _backgroundView.SetDefaultColor;
         }
 
         private void OnChangeColor(CubeView cubeView)

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Runtime
+namespace Runtime.Background
 {
     public class BackgroundView : MonoBehaviour
     {

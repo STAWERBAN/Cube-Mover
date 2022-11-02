@@ -16,8 +16,18 @@
             _view.ChangeBlockButton.onClick.AddListener(_uiModel.ChangeCubeButtonClick);
             _view.RemoveSegmentButton.onClick.AddListener(_uiModel.OnDeleteSegmentButtonClick);
             _view.RemovePathButton.onClick.AddListener(_uiModel.OnDeletePathButtonClicked);
-            _view.StopButton.onClick.AddListener(_uiModel.OnStopButtonClick);
-            _view.PlayButton.onClick.AddListener(_uiModel.OnStartButtonClick);
+            _view.StopButton.onClick.AddListener(() =>
+            {
+                _uiModel.OnStopButtonClick();
+                _view.StopButton.gameObject.SetActive(false);
+                _view.PlayButton.gameObject.SetActive(true);
+            });
+            _view.PlayButton.onClick.AddListener(() =>
+            {
+                _uiModel.OnStartButtonClick();
+                _view.StopButton.gameObject.SetActive(true);
+                _view.PlayButton.gameObject.SetActive(false);
+            });
         }
     }
 }
