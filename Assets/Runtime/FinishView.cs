@@ -12,7 +12,7 @@ namespace Runtime
         {
             return transform.position + Vector3.right * _xOffset;
         }
-        
+
         public void SetDefaultColor()
         {
             _meshRenderer.material.color = _defaultColor;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using UnityEngine;
 
 namespace Runtime
@@ -69,7 +70,7 @@ namespace Runtime
         {
             if (_currentIndex <= StartIndex)
                 return true;
-            
+
             var lastElement = _pathSegments[_currentIndex - 1];
             var previousElement = _pathSegments[_currentIndex - 2];
 

@@ -1,9 +1,11 @@
-using System.Collections.Generic;
-using UnityEngine;
 using Runtime;
-using Runtime.Background;
 using Runtime.UI;
 using Runtime.Cube;
+using Runtime.Background;
+
+using System.Collections.Generic;
+
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class GameInitializer : MonoBehaviour

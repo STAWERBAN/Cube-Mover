@@ -149,7 +149,7 @@ namespace Runtime
             _mouseController.MouseDragging -= OnMouseDragging;
             _mouseController.MousePressed -= OnMousePressed;
             _mouseController.MouseUpped -= OnMouseUpped;
-            
+
             _uiModel.ChangeCube -= OnChangeCube;
             _uiModel.StopButtonClick -= OnStopButtonClick;
             _uiModel.StartButtonClick -= OnStartButtonClick;

@@ -17,7 +17,6 @@ namespace Runtime.Cube
         public LineRenderer LineRenderer => _lineRenderer;
         public float MoveSpeed => _moveSpeed;
 
-
         public Vector3 Position()
         {
             return transform.position;
