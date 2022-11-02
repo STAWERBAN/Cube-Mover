@@ -1,9 +1,11 @@
-using System;
 using System.Collections.Generic;
+
 using UnityEngine;
+
 using Runtime;
 using Runtime.UI;
 using Runtime.Cube;
+using UnityEngine.EventSystems;
 
 public class GameInitializer : MonoBehaviour
 {
@@ -11,8 +13,8 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] private BackgroundView _backgroundView;
     [SerializeField] private UIView _view;
     [SerializeField] private Camera _camera;
+    [SerializeField] private EventSystem _eventSystem;
 
-    private MouseController _mouseController;
     private UIModel _uiModel;
     private Game _game;
 
@@ -45,7 +47,7 @@ public class GameInitializer : MonoBehaviour
 
     private void InitializeGame()
     {
-        _game = new Game(_camera, _uiModel);
+        _game = new Game(_camera, _uiModel, _eventSystem);
         _game.Initilize();
     }
 

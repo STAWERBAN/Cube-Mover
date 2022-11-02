@@ -67,10 +67,11 @@ namespace Runtime
 
         public bool CheckLastPositionAvailableDistance()
         {
+            if (_currentIndex <= StartIndex)
+                return true;
+            
             var lastElement = _pathSegments[_currentIndex - 1];
             var previousElement = _pathSegments[_currentIndex - 2];
-            
-            Debug.Log(Vector3.Distance(lastElement, previousElement));
 
             return Vector3.Distance(lastElement, previousElement) > MinDistanceToAddSegment;
         }

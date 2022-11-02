@@ -14,6 +14,10 @@
         public void Initialize()
         {
             _view.ChangeBlockButton.onClick.AddListener(_uiModel.ChangeCubeButtonClick);
+            _view.RemoveSegmentButton.onClick.AddListener(_uiModel.OnDeleteSegmentButtonClick);
+            _view.RemovePathButton.onClick.AddListener(_uiModel.OnDeletePathButtonClicked);
+            _view.StopButton.onClick.AddListener(_uiModel.OnStopButtonClick);
+            _view.PlayButton.onClick.AddListener(_uiModel.OnStartButtonClick);
         }
     }
 }

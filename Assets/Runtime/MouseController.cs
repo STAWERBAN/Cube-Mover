@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Runtime
 {
@@ -10,18 +11,23 @@ namespace Runtime
         public event Action<Vector3> MouseDragging = delegate { };
 
         private readonly Camera _camera;
+        private readonly EventSystem _eventSystem;
         
         private Vector3 _startPosition;
         private Vector3 _endPosition;
         private bool _dragging;
 
-        public MouseController(Camera camera)
+        public MouseController(Camera camera, EventSystem eventSystem)
         {
             _camera = camera;
+            _eventSystem = eventSystem;
         }
         
         public void Update()
         {
+            if(_eventSystem.currentSelectedGameObject && !_dragging)
+                return;
+            
             if (Input.GetMouseButtonDown(0))
             {
                 _dragging = true;

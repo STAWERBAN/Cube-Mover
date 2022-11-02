@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Runtime.Cube;
 using Runtime.UI;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Runtime
 {
@@ -12,27 +13,31 @@ namespace Runtime
 
         private readonly Camera _camera;
         private readonly UIModel _uiModel;
+        private readonly EventSystem _eventSystem;
 
         private MouseController _mouseController;
         private CubeView _currentCube;
         private CubeModel _currentModel;
         private Queue<CubeView> _cubeQueue = new Queue<CubeView>();
 
-        public Game(Camera camera, UIModel uiModel)
+        public Game(Camera camera, UIModel uiModel, EventSystem eventSystem)
         {
             _camera = camera;
             _uiModel = uiModel;
+            _eventSystem = eventSystem;
         }
 
         public void Initilize()
         {
-            _mouseController = new MouseController(_camera);
+            _mouseController = new MouseController(_camera, _eventSystem);
 
             _mouseController.MouseDragging += OnMouseDragging;
             _mouseController.MousePressed += OnMousePressed;
             _mouseController.MouseUpped += OnMouseUpped;
 
             _uiModel.ChangeCube += OnChangeCube;
+            _uiModel.DeletePathButtonClicked += OnDeletePathButtonClicked;
+            _uiModel.DeletePathSegmentButtonClicked += OnDeletePathSegmentButtonClicked;
         }
 
         public void Update()
@@ -74,6 +79,16 @@ namespace Runtime
             {
                 _cubeQueue.Enqueue(cube);
             }
+        }
+
+        private void OnDeletePathSegmentButtonClicked()
+        {
+            _currentModel.OnRemoveCubeLastPathSegment();
+        }
+
+        private void OnDeletePathButtonClicked()
+        {
+            _currentModel.OnRemoveCubePath();
         }
 
         private void OnChangeCube()
