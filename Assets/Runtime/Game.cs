@@ -29,15 +29,18 @@ namespace Runtime
 
         public void Initilize()
         {
-            _mouseController.MouseDragging += OnMouseDragging;
-            _mouseController.MousePressed += OnMousePressed;
-            _mouseController.MouseUpped += OnMouseUpped;
-
-            _uiModel.ChangeCube += OnChangeCube;
             _uiModel.StopButtonClick += OnStopButtonClick;
             _uiModel.StartButtonClick += OnStartButtonClick;
-            _uiModel.DeletePathButtonClicked += OnDeletePathButtonClicked;
-            _uiModel.DeletePathSegmentButtonClicked += OnDeletePathSegmentButtonClicked;
+            
+            SubscribeToAction();
+        }
+
+        public void Dispose()
+        {
+            _uiModel.StopButtonClick -= OnStopButtonClick;
+            _uiModel.StartButtonClick -= OnStartButtonClick;
+
+            UnsubscribeEvents();
         }
 
         public void AddNewCube(CubeView cube, CubeModel model)
@@ -61,11 +64,6 @@ namespace Runtime
             }
 
             _cubeDictionary.Add(cube, model);
-        }
-
-        public void Dispose()
-        {
-            UnsubscribeEvents();
         }
 
         private void CreateCubeQueue()
@@ -114,6 +112,8 @@ namespace Runtime
 
         private void OnStartButtonClick()
         {
+            UnsubscribeEvents();
+
             _uiModel.SetBackgroundDefaultColor();
 
             foreach (var cubeModel in _cubeDictionary.Values)
@@ -127,6 +127,8 @@ namespace Runtime
         {
             _finishView.SetDefaultColor();
             _uiModel.ChangeColor(_currentCube);
+
+            UnsubscribeEvents();
 
             foreach (var cubeModel in _cubeDictionary.Values)
             {
@@ -144,6 +146,17 @@ namespace Runtime
             _finishView.SetColor(cubeView.CubeColor);
         }
 
+        private void SubscribeToAction()
+        {
+            _mouseController.MouseDragging += OnMouseDragging;
+            _mouseController.MousePressed += OnMousePressed;
+            _mouseController.MouseUpped += OnMouseUpped;
+
+            _uiModel.ChangeCube += OnChangeCube;
+            _uiModel.DeletePathButtonClicked += OnDeletePathButtonClicked;
+            _uiModel.DeletePathSegmentButtonClicked += OnDeletePathSegmentButtonClicked;
+        }
+
         private void UnsubscribeEvents()
         {
             _mouseController.MouseDragging -= OnMouseDragging;
@@ -151,8 +164,6 @@ namespace Runtime
             _mouseController.MouseUpped -= OnMouseUpped;
 
             _uiModel.ChangeCube -= OnChangeCube;
-            _uiModel.StopButtonClick -= OnStopButtonClick;
-            _uiModel.StartButtonClick -= OnStartButtonClick;
             _uiModel.DeletePathButtonClicked -= OnDeletePathButtonClicked;
             _uiModel.DeletePathSegmentButtonClicked -= OnDeletePathSegmentButtonClicked;
         }

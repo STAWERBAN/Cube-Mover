@@ -1,6 +1,8 @@
-﻿namespace Runtime.UI
+﻿using System;
+
+namespace Runtime.UI
 {
-    public class UIController
+    public class UIController : IDisposable
     {
         private readonly UIView _view;
         private readonly UIModel _uiModel;
@@ -28,6 +30,15 @@
                 _view.StopButton.gameObject.SetActive(true);
                 _view.PlayButton.gameObject.SetActive(false);
             });
+        }
+
+        public void Dispose()
+        {
+            _view.ChangeBlockButton.onClick.RemoveAllListeners();
+            _view.RemoveSegmentButton.onClick.RemoveAllListeners();
+            _view.RemovePathButton.onClick.RemoveAllListeners();
+            _view.StopButton.onClick.RemoveAllListeners();
+            _view.PlayButton.onClick.RemoveAllListeners();
         }
     }
 }
