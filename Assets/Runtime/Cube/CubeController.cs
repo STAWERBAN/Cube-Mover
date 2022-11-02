@@ -21,6 +21,8 @@ namespace Runtime.Cube
 
         public void Initialize()
         {
+            _path.AddNewSegment(_cube.Position());
+            
             _cubeModel.RemoveCubePath += OnRemovePath;
             _cubeModel.CubeStartMoving += OnStartMoving;
             _cubeModel.AddCubePathSegment += OnAddPathSegment;
