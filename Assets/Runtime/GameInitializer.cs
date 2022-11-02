@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Runtime;
@@ -21,6 +22,11 @@ public class GameInitializer : MonoBehaviour
         InitializeBackground();
         InitializeGame();
         InitializeCubes();
+    }
+
+    private void Update()
+    {
+        _game?.Update();
     }
 
     private void InitializeUI()
@@ -48,10 +54,10 @@ public class GameInitializer : MonoBehaviour
         foreach (var cube in _cubes)
         {
             var cubeModel = new CubeModel();
-            var cubePath = new Path(cube.LineRenderer);
+            var cubePath = new Path(cube.LineRenderer, cube.PathColor, cube.Position());
             var cubeController = new CubeController(cube, cubePath, cubeModel);
 
-            _game.AddNewCube(cube, cubePath);
+            _game.AddNewCube(cube, cubeModel);
 
             cubeController.Initialize();
         }

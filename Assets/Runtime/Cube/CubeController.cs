@@ -21,25 +21,27 @@ namespace Runtime.Cube
 
         public void Initialize()
         {
-            _path.AddNewSegment(_cube.Position());
-            
             _cubeModel.RemoveCubePath += OnRemovePath;
             _cubeModel.CubeStartMoving += OnStartMoving;
+            _cubeModel.MovePathSegment += OnMovePathSegment;
             _cubeModel.AddCubePathSegment += OnAddPathSegment;
             _cubeModel.RemoveCubeLastPathSegment += OnRemoveLastSegment;
+            _cubeModel.SegmentChangeCompleted += OnSegmentChangeComplete;
         }
 
         public void Dispose()
         {
             _cubeModel.RemoveCubePath -= OnRemovePath;
             _cubeModel.CubeStartMoving -= OnStartMoving;
+            _cubeModel.MovePathSegment -= OnMovePathSegment;
             _cubeModel.AddCubePathSegment -= OnAddPathSegment;
             _cubeModel.RemoveCubeLastPathSegment -= OnRemoveLastSegment;
+            _cubeModel.SegmentChangeCompleted -= OnSegmentChangeComplete;
         }
 
-        private void OnAddPathSegment(Vector3 segment)
+        private void OnAddPathSegment()
         {
-            _path.AddNewSegment(segment);
+            _path.AddNewSegment();
         }
 
         private void OnRemoveLastSegment()
@@ -50,6 +52,17 @@ namespace Runtime.Cube
         private void OnRemovePath()
         {
             _path.RemoveAll();
+        }
+
+        private void OnMovePathSegment(Vector3 offset)
+        {
+            _path.MoveLastSegment(offset);
+        }
+
+        private void OnSegmentChangeComplete()
+        {
+            if(!_path.CheckLastPositionAvailableDistance())
+                _path.RemoveLastSegment();
         }
 
         private void OnStartMoving()

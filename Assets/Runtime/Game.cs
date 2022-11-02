@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using Runtime.Cube;
 using Runtime.UI;
-
 using UnityEngine;
 
 namespace Runtime
 {
     public class Game : IDisposable
     {
-        private Dictionary<CubeView, Path> _cubePathDictionary = new Dictionary<CubeView, Path>();
+        private Dictionary<CubeView, CubeModel> _cubeDictionary = new Dictionary<CubeView, CubeModel>();
 
         private readonly Camera _camera;
         private readonly UIModel _uiModel;
 
         private MouseController _mouseController;
         private CubeView _currentCube;
+        private CubeModel _currentModel;
         private Queue<CubeView> _cubeQueue = new Queue<CubeView>();
 
         public Game(Camera camera, UIModel uiModel)
@@ -36,9 +35,14 @@ namespace Runtime
             _uiModel.ChangeCube += OnChangeCube;
         }
 
-        public void AddNewCube(CubeView cube, Path path)
+        public void Update()
         {
-            if (_cubePathDictionary.ContainsKey(cube))
+            _mouseController?.Update();
+        }
+
+        public void AddNewCube(CubeView cube, CubeModel model)
+        {
+            if (_cubeDictionary.ContainsKey(cube))
             {
                 Debug.LogWarning($@"You add {cube.name} twice");
                 return;
@@ -49,13 +53,14 @@ namespace Runtime
             if (_currentCube is null)
             {
                 _currentCube = cube;
+                _currentModel = model;
 
                 _cubeQueue.Dequeue();
 
                 _uiModel.ChangeColor(_currentCube);
             }
 
-            _cubePathDictionary.Add(cube, path);
+            _cubeDictionary.Add(cube, model);
         }
 
         public void Dispose()
@@ -65,7 +70,7 @@ namespace Runtime
 
         private void CreateCubeQueue()
         {
-            foreach (var cube in _cubePathDictionary.Keys)
+            foreach (var cube in _cubeDictionary.Keys)
             {
                 _cubeQueue.Enqueue(cube);
             }
@@ -77,6 +82,7 @@ namespace Runtime
                 CreateCubeQueue();
 
             _currentCube = _cubeQueue.Dequeue();
+            _currentModel = _cubeDictionary[_currentCube];
 
             _uiModel.ChangeColor(_currentCube);
         }
@@ -90,17 +96,17 @@ namespace Runtime
 
         private void OnMouseUpped()
         {
-            throw new System.NotImplementedException();
+            _currentModel.OnSegmentChangeComplete();
         }
 
         private void OnMousePressed()
         {
-            throw new System.NotImplementedException();
+            _currentModel.OnAddNewSegment();
         }
 
-        private void OnMouseDragging(Vector3 arg1, Vector3 arg2)
+        private void OnMouseDragging(Vector3 offset)
         {
-            throw new System.NotImplementedException();
+            _currentModel.OnMoveLastSegment(offset);
         }
     }
 }

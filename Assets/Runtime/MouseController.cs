@@ -7,7 +7,7 @@ namespace Runtime
     {
         public event Action MousePressed = delegate { };
         public event Action MouseUpped = delegate { }; 
-        public event Action<Vector3, Vector3> MouseDragging = delegate { };
+        public event Action<Vector3> MouseDragging = delegate { };
 
         private readonly Camera _camera;
         
@@ -39,7 +39,7 @@ namespace Runtime
             if (_dragging)
             {
                 _endPosition = GetInputWorldCoords();
-                MouseDragging(_startPosition, _endPosition);
+                MouseDragging(_endPosition - _startPosition);
             }
         }
         
