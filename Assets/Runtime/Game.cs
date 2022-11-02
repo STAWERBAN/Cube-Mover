@@ -128,7 +128,7 @@ namespace Runtime
             _finishView.SetDefaultColor();
             _uiModel.ChangeColor(_currentCube);
 
-            UnsubscribeEvents();
+            SubscribeToAction();
 
             foreach (var cubeModel in _cubeDictionary.Values)
             {
